@@ -1,5 +1,3 @@
-import './style.css';
-
 interface Phrase { k: 'name' | 'pt'; w: string[] }
 interface Group { k: string; els: HTMLElement[] }
 interface WordInfo { pid: number; k: string; idx: number; n: number }
