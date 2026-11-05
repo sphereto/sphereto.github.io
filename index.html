@@ -334,20 +334,41 @@
   var started = false;
   function init() {
     if (started) return; started = true;
-    split();
-    if (reduced) showAll(); else play();
+    try {
+      split();
+      if (reduced) showAll(); else play();
+    } catch (err) {
+      // never leave the page hidden if something goes wrong
+      try { showAll(); } catch (e) {}
+      if (window.console) console.error(err);
+    }
     document.documentElement.classList.add('ready');   // reveal only now, already in its starting state
   }
 
-  // Wait for the font so line breaks are measured correctly
-  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(init);
-  setTimeout(init, 2500);   // fallback if the font is slow
+  // Wait for the actual Geist faces (not just document.fonts.ready, which can resolve
+  // BEFORE the webfont has even started downloading) so line breaks are measured with
+  // the real font. On a deployed site the font arrives over the network, which is why
+  // this raced and broke the intro there but not locally.
+  function fontsReady() {
+    if (!document.fonts || !document.fonts.load) return Promise.resolve();
+    return Promise.all([
+      document.fonts.load('400 1em Geist', text),
+      document.fonts.load('500 1em Geist', 'Hello!')
+    ]).then(function () { return document.fonts.ready; }, function () {});
+  }
+  fontsReady().then(init);
+  setTimeout(init, 2500);   // fallback if the font is slow or blocked
 
-  // On resize, re-detect lines and show the finished state
-  var rt;
+  // On resize, re-detect lines and show the finished state.
+  // Only react to WIDTH changes: mobile browsers fire resize (height only) when the
+  // address bar collapses/expands, which used to cancel the intro on phones.
+  var lastW = innerWidth, rt;
   addEventListener('resize', function () {
+    if (innerWidth === lastW) return;
+    lastW = innerWidth;
     clearTimeout(rt);
     rt = setTimeout(function () {
+      if (!started) return;
       timers.forEach(clearTimeout); timers = [];
       split(); showAll();
     }, 200);
