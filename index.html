@@ -63,6 +63,28 @@
   .js #t .hello { opacity: 0; }                        /* "Hello!" is shown by the script */
   #t .mask.done { -webkit-mask-image: none; mask-image: none; filter: none; will-change: auto; }
 
+  /* shiny name */
+  .shiny-text {
+    position: relative;
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    -webkit-background-clip: text;
+            background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .shiny-text__glow {
+    position: absolute;
+    inset: 0;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    -webkit-background-clip: text;
+            background-clip: text;
+    filter: blur(0.14em);
+    pointer-events: none;
+    user-select: none;
+  }
+
   /* links */
   #links { margin-top: clamp(1.5rem, 4vh, 2.25rem); }
   #links .rule { height: 1px; background: rgba(255,255,255,.22); transform-origin: left; transition: transform 900ms cubic-bezier(.6,0,.2,1); }
@@ -107,20 +129,124 @@
   var p = document.getElementById('t');
   var text = p.textContent.trim();
   var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var timers = [], masks = [], hello, anims = [], raf = 0;
+  var timers = [], masks = [], shinies = [], hello, anims = [], raf = 0;
+
+  // ---- Shiny text: vanilla port of the ShinyText component (loop trigger) ----
+  var NAME = 'Sphereto';
+  var SHINE = { color: '#b5b5b5', shineColor: '#ffffff', speed: 5, delay: 0, angle: 120,
+                shineWidth: 40, softness: 0.8, bands: 1, glow: 0.25, sign: -1 };   // sign -1 = direction "left"
+  var FALLOFF = [0, 0.2, 0.4, 0.6, 0.8, 1];
+  var paint = null;
+
+  function parseColor(value) {
+    if (!paint) paint = document.createElement('canvas').getContext('2d');
+    if (!paint) return null;
+    paint.fillStyle = '#000000';
+    paint.fillStyle = value;
+    var resolved = String(paint.fillStyle);
+    if (resolved.charAt(0) === '#') {
+      return [1, 3, 5].map(function (i) { return parseInt(resolved.slice(i, i + 2), 16); }).concat(1);
+    }
+    var parts = resolved.match(/[\d.]+/g);
+    if (!parts || parts.length < 3) return null;
+    return [Number(parts[0]), Number(parts[1]), Number(parts[2]), parts.length > 3 ? Number(parts[3]) : 1];
+  }
+
+  function blend(from, to, amount) {
+    function channel(a, b) {
+      return Math.round(Math.pow(Math.pow(a / 255, 2.2) * (1 - amount) + Math.pow(b / 255, 2.2) * amount, 1 / 2.2) * 255);
+    }
+    var alpha = from[3] * (1 - amount) + to[3] * amount;
+    if (alpha <= 0) return 'rgba(0, 0, 0, 0)';
+    function weigh(a, b) { return (a * from[3] * (1 - amount) + b * to[3] * amount) / alpha; }
+    var same = from[3] === to[3];
+    var r = same ? channel(from[0], to[0]) : Math.round(weigh(from[0], to[0]));
+    var g = same ? channel(from[1], to[1]) : Math.round(weigh(from[1], to[1]));
+    var b = same ? channel(from[2], to[2]) : Math.round(weigh(from[2], to[2]));
+    return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + Math.round(alpha * 1000) / 1000 + ')';
+  }
+
+  function makeShiny(root, glowEl) {
+    var o = SHINE;
+    var base = parseColor(o.color), shine = parseColor(o.shineColor);
+    var clear = shine ? [shine[0], shine[1], shine[2], 0] : null;
+    var half = o.shineWidth / 2;
+    var extent = half + (o.bands - 1) * o.shineWidth * 1.3 + 2;
+    var entry = o.sign > 0 ? -extent : 100 + extent;
+    var exit  = o.sign > 0 ? 100 + extent : -extent;
+    var dur = o.speed * 1000, cycle = dur + o.delay * 1000;
+    var raf = 0, t0 = 0, alive = true;
+
+    function gradient(pos, fill) {
+      var core = half * (1 - o.softness), fade = half - core, stops = [];
+      for (var band = 0; band < o.bands; band++) {
+        var center = pos - o.sign * band * o.shineWidth * 1.3;
+        var strength = 1 - band * 0.28;
+        [-1, 1].forEach(function (side) {
+          FALLOFF.forEach(function (f) {
+            stops.push([center + side * (core + fade * (1 - f)), f * f * (3 - 2 * f) * strength]);
+          });
+        });
+      }
+      stops.sort(function (a, b) { return a[0] - b[0]; });
+      var list = stops.map(function (x) { return blend(fill, shine, x[1]) + ' ' + x[0].toFixed(2) + '%'; });
+      return 'linear-gradient(' + o.angle + 'deg, ' + blend(fill, shine, 0) + ' 0%, ' + list.join(', ') + ', ' + blend(fill, shine, 0) + ' 100%)';
+    }
+
+    function tick(now) {
+      raf = 0;
+      if (!alive) return;
+      var ph = (now - t0) % cycle;
+      if (ph < dur) {
+        var t = ph / dur, e = 0.5 - Math.cos(Math.PI * t) / 2;   // "smooth" easing
+        var pos = entry + (exit - entry) * e;
+        root.style.backgroundImage = gradient(pos, base);
+        glowEl.style.backgroundImage = gradient(pos, clear);
+        glowEl.style.opacity = String(o.glow);
+      } else {
+        root.style.backgroundImage = 'linear-gradient(' + o.color + ', ' + o.color + ')';
+        glowEl.style.backgroundImage = 'none';
+      }
+      raf = requestAnimationFrame(tick);
+    }
+
+    root.style.backgroundImage = 'linear-gradient(' + o.color + ', ' + o.color + ')';
+    return {
+      start: function () {
+        if (raf || !alive || !base || !shine || reduced) return;   // reduced motion: stays a still colour
+        t0 = performance.now();
+        raf = requestAnimationFrame(tick);
+      },
+      destroy: function () { alive = false; cancelAnimationFrame(raf); }
+    };
+  }
+
+  function startShine() { shinies.forEach(function (x) { x.start(); }); }
 
   // Block touch scrolling / rubber-banding (iOS ignores CSS alone)
   document.addEventListener('touchmove', function (e) { e.preventDefault(); }, { passive: false });
   document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
 
   function split() {
+    shinies.forEach(function (x) { x.destroy(); }); shinies = [];
     p.textContent = '';
     var words = text.split(' ');
     var spans = [];
     words.forEach(function (w, i) {
       var s = document.createElement('span');
       s.className = 'w' + (i === 0 ? ' hello' : '');
-      s.textContent = w + (i === words.length - 1 ? '' : ' ');
+      var last = i === words.length - 1, m = w.match(/^(.*?)([.,!?;:]*)$/);
+      if (m[1] === NAME) {
+        var sh = document.createElement('span'); sh.className = 'shiny-text'; sh.textContent = m[1];
+        var gl = document.createElement('span'); gl.className = 'shiny-text__glow';
+        gl.setAttribute('aria-hidden', 'true'); gl.textContent = m[1];
+        sh.appendChild(gl);
+        s.appendChild(sh);
+        s.appendChild(document.createTextNode(m[2] + (last ? '' : ' ')));
+        shinies.push(makeShiny(sh, gl));
+      } else {
+        s.textContent = w + (last ? '' : ' ');
+      }
       p.appendChild(s); spans.push(s);
     });
 
@@ -148,6 +274,7 @@
     masks.forEach(function (m) { m.classList.add('done'); });
     hello.style.transition = 'none'; hello.style.transform = 'none'; hello.style.opacity = 1;
     linksEl.classList.add('go');
+    startShine();
   }
 
   function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
@@ -209,6 +336,7 @@
     // 4. links appear once the text has finished
     var textEnd = T3 + (masks.length - 1) * GAP + DUR;
     later(showLinks, textEnd - 200);
+    later(startShine, textEnd);   // name starts to shine once the text is fully in
   }
 
   var started = false;
