@@ -2,17 +2,48 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Sphereto</title>
 <meta name="description" content="Hello! I’m Sphereto, a student who is curious, open-minded, and always eager to learn.">
+<link rel="canonical" href="https://sphereto.github.io/">
+<meta name="author" content="Sphereto">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Sphereto">
+<meta property="og:locale" content="en_US">
+<meta property="og:url" content="https://sphereto.github.io/">
 <meta property="og:title" content="Sphereto">
 <meta property="og:description" content="Hello! I’m Sphereto, a student who is curious, open-minded, and always eager to learn.">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://sphereto.github.io/og-image.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Sphereto, written in white dotted pixel letters on a black background">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Sphereto">
+<meta name="twitter:description" content="Hello! I’m Sphereto, a student who is curious, open-minded, and always eager to learn.">
+<meta name="twitter:image" content="https://sphereto.github.io/og-image.png">
+<meta name="twitter:image:alt" content="Sphereto, written in white dotted pixel letters on a black background">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#000000">
 <script>document.documentElement.classList.add('js')</script>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='42' fill='%237c3aed'/%3E%3C/svg%3E">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Sphereto",
+  "url": "https://sphereto.github.io/",
+  "image": "https://sphereto.github.io/og-image.png",
+  "description": "Hello! I’m Sphereto, a student who is curious, open-minded, and always eager to learn.",
+  "sameAs": [
+    "https://github.com/sphereto",
+    "https://www.instagram.com/ssphereto",
+    "https://www.tiktok.com/@sphereto"
+  ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&display=swap" rel="stylesheet">
@@ -20,6 +51,7 @@
   :root { --accent: #7c3aed; --accent-soft: #a78bfa; }
   .js:not(.ready) #c { visibility: hidden; }   /* no flash of the finished page before the intro starts */
   * { box-sizing: border-box; margin: 0; }
+  .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
   ::selection { background: var(--accent); color: #fff; }
 
   /* locked in place: no scroll, no rubber-band */
@@ -104,20 +136,21 @@
 </head>
 <body>
 <main id="c">
+<h1 class="sr-only">Sphereto</h1>
 <p id="t">Hello! I’m Sphereto, a student who is curious, open-minded, and always eager to learn. I enjoy exploring different interests, developing new skills, and challenging myself to become a better version of who I am.</p>
 <div id="links">
   <div class="rule"></div>
   <nav class="icons" aria-label="Links">
-    <a href="https://github.com/sphereto" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub">
+    <a href="https://github.com/sphereto" target="_blank" rel="me noopener noreferrer" aria-label="GitHub" title="GitHub">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
     </a>
-    <a href="https://www.instagram.com/ssphereto" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram">
+    <a href="https://www.instagram.com/ssphereto" target="_blank" rel="me noopener noreferrer" aria-label="Instagram" title="Instagram">
       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.1" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.3" cy="6.7" r="1.25"/></svg>
     </a>
-    <a href="https://www.tiktok.com/@sphereto" target="_blank" rel="noopener noreferrer" aria-label="TikTok" title="TikTok">
+    <a href="https://www.tiktok.com/@sphereto" target="_blank" rel="me noopener noreferrer" aria-label="TikTok" title="TikTok">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
     </a>
-    <a href="https://discord.com/users/828424877983793162" target="_blank" rel="noopener noreferrer" aria-label="Discord" title="Discord">
+    <a href="https://discord.com/users/828424877983793162" target="_blank" rel="me noopener noreferrer" aria-label="Discord" title="Discord">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg>
     </a>
   </nav>
